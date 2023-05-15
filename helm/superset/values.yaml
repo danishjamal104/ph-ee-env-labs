@@ -864,6 +864,19 @@ ph-ee-engine:
       - apiVersion: configuration.konghq.com/v1
         kind: KongClusterPlugin
         metadata:
+          name: key-auth-example
+          annotations:
+            kubernetes.io/ingress.class: "kong"
+          labels:
+            global: "false"
+        disabled: false
+        config: 
+          key_names:
+            - apikey
+        plugin: key-auth
+      - apiVersion: configuration.konghq.com/v1
+        kind: KongClusterPlugin
+        metadata:
           name: request-transformer
           annotations:
             kubernetes.io/ingress.class: "kong"
@@ -876,24 +889,6 @@ ph-ee-engine:
             headers:
             - cookie
             - x-id-token
-      - apiVersion: configuration.konghq.com/v1
-        kind: KongClusterPlugin
-        metadata:
-          name: cors
-          annotations:
-            kubernetes.io/ingress.class: "kong"
-          labels:
-            global: "true"    
-        disabled: false # optionally disable the plugin in Kong
-        plugin: cors
-        config: 
-          origins: 
-            - "*"
-          credentials: true
-          max_age: 3600
-          exposed_headers : 
-            - "X-Auth-Token"
-          preflight_continue: false
       - apiVersion: configuration.konghq.com/v1
         kind: KongClusterPlugin
         metadata:
