@@ -868,7 +868,7 @@ ph-ee-engine:
           annotations:
             kubernetes.io/ingress.class: "kong"
           labels:
-            global: "false"
+            global: "true"
         disabled: false # optionally disable the plugin in Kong
         plugin: oidc
         config: # configuration for the plugin
