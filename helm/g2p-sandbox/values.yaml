@@ -400,6 +400,12 @@ ph-ee-engine:
   mpesa:
     enabled: false
 
+  roster_connector:
+    enabled: false
+
+  paygops_connector:
+    enabled: false
+
   notifications:
     enabled: true
     image: "419830066942.dkr.ecr.ap-south-1.amazonaws.com/ph-ee-notifications"
