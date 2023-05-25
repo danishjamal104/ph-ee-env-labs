@@ -402,7 +402,7 @@ ph-ee-engine:
 
   roster_connector:
     enabled: false
-    
+
   paygops_connector:
     enabled: false
 
@@ -687,4 +687,42 @@ zeebe-operate:
         port:
           number: 80
 
-
+integration_test:
+    enabled: true
+    replicas: 1
+    image: "419830066942.dkr.ecr.ap-south-1.amazonaws.com/phee-integration-test"
+    imageTag: latest
+    imagePullPolicy: "Always"
+    limits:
+      cpu: "500m"
+      memory: "3Gi"
+    requests:
+      cpu: "100m"
+      memory: "2Gi"
+    operations_app:
+      contactpoint: "https://ops-bk.sandbox.fynarfin.io"
+    bulk_processor:
+      contactpoint: "https://bulk-connector.sandbox.fynarfin.io"
+    channel_connector:
+      contactpoint: "https://channel.sandbox.fynarfin.io"
+    kafka:
+      brokers: "kafka:9092"
+      topics: "zeebe-export"
+      consumerTimeoutMs: "300000"
+    zeebe_operations:
+      contactpoint: "https://zeebeops.sandbox.fynarfin.io"
+      no_of_workflows: "100"
+      thread-count: "20"
+    max_retry_count: "5"
+    retry_intervals: "15000"
+    defaults:
+      tenant: "gorilla"
+      authorization: "Basic bWlmb3M6cGFzc3dvcmQ="
+    channel:
+      base_url: "https://channel.sandbox.fynarfin.io"
+    loan:
+      base_url: "https://fynams.sandbox.fynarfin.io"
+    savings:
+      base_url: "https://fynams.sandbox.fynarfin.io"
+    gradle:
+      command: "./gradlew cucumberCli -P tags=@gov;"
