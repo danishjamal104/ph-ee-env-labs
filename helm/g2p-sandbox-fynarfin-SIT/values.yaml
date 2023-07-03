@@ -235,9 +235,98 @@ ph-ee-g2psandbox:
     
     kong:
       enabled: false
-      ingress:
+      image:
+        repository: revomatico/docker-kong-oidc
+        tag: "latest"
+      env:
+        plugins: "bundled,oidc,key-auth"
+        database: postgres
+        pg_host: "127.0.0.1" 
+        pg_user: "keycloak"                  
+        pg_password: "4IgojOOd4W"
+        pg_database: "kong"   
+      admin:
         enabled: true
-        hostname: admin-kong.sandbox.fynarfin.io 
+        http:
+          enabled: true
+        tls:
+          enabled: false    
+        ingress:
+          enabled: true
+          ingressClassName: "kong"
+          hostname: kong-admin.sandbox.fynarfin.io
+      extraObjects:
+        - apiVersion: configuration.konghq.com/v1
+          kind: KongClusterPlugin
+          metadata:
+            name: request-transformer
+            annotations:
+              kubernetes.io/ingress.class: "kong"
+            labels:
+              global: "true"
+          disabled: false # optionally disable the plugin in Kong
+          plugin: request-transformer
+          config:
+            remove:
+              headers:
+                - cookie
+                - x-id-token
+        - apiVersion: configuration.konghq.com/v1
+          kind: KongClusterPlugin
+          metadata:
+            name: cors
+            annotations:
+              kubernetes.io/ingress.class: "kong"
+            labels:
+              global: "true"
+          disabled: false # optionally disable the plugin in Kong
+          plugin: cors
+          config:
+            origins:
+              - "*"
+            credentials: true
+            max_age: 3600
+            exposed_headers :
+              - "X-Auth-Token"
+            preflight_continue: false
+        - apiVersion: configuration.konghq.com/v1
+          kind: KongClusterPlugin
+          metadata:
+            name: oidc
+            annotations:
+              kubernetes.io/ingress.class: "kong"
+            labels:
+              global: "true"
+          disabled: false # optionally disable the plugin in Kong
+          plugin: oidc
+          config: # configuration for the plugin
+            client_id: kong-oidc
+            client_secret: xxxxxxxx  # Generated on keyCloak
+            realm: kong
+            discovery: https://keycloak.localhost/auth/realms/kong-oidc/.well-known/openid-configuration
+            scope: openid  
+        - apiVersion: configuration.konghq.com/v1
+          kind: KongPlugin
+          metadata:
+            name: key-auth
+          plugin: key-auth
+        - apiVersion: configuration.konghq.com/v1
+          kind: KongConsumer
+          metadata:
+            name: default-user
+            annotations:
+              kubernetes.io/ingress.class: kong
+          username: default-user
+          credentials:
+            - default-user-apikey-secret
+        - apiVersion: v1
+          kind: Secret
+          metadata:
+            name: default-user-apikey-secret
+          type: Opaque
+          data:
+            key: "apikey"
+            kongCredType: "secretkey"
 
     redis:
       enabled: true
