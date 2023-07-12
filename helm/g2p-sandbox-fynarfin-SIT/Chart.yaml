@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 apiVersion: v2
 name: ph-ee-g2psandbox-fynarfin
 description: PaymentHub EE Barebone Edition
@@ -9,5 +8,10 @@ appVersion: 1.16.0
 
 dependencies:
 - name: ph-ee-g2psandbox
-  repository: https://fynarfin.io/images/ph-ee-g2psandbox-1.0.1
-  version: 1.0.1
+  repository: https://fynarfin.io/images/ph-ee-g2psandbox-0.0.0
+  version: 0.0.0
+
+- name: hello
+  repository: https://cloudecho.github.io/charts/
+  alias: hello-world
+  version: 0.1.2
