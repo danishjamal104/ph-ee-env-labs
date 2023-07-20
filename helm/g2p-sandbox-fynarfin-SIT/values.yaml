@@ -244,7 +244,7 @@ ph-ee-g2psandbox:
       enabled: true
       ingress:
         enabled: true 
-        ingressClassName: "nginx"
+        ingressClassName: "kong"
         rules:
           - host: 'keycloak.sandbox.fynarfin.io'
             paths:
@@ -314,15 +314,17 @@ ph-ee-g2psandbox:
             annotations:
               kubernetes.io/ingress.class: "kong"
             labels:
-              global: "true"
+              global: "false"
           disabled: false # optionally disable the plugin in Kong
           plugin: oidc
           config: # configuration for the plugin
             client_id: kong-oidc
-            client_secret: 46d4YWwUMtb66oSmOOtNmpDajooYtlbe  # Generated on keyCloak
-            realm: kong
+            client_secret: Z8ZDBn9W6j22H0Z3suBBJvzjzvf7xBPl  # Generated on keyCloak
+            realm: Kong
             discovery: http://keycloak.sandbox.fynarfin.io/auth/realms/Kong/.well-known/openid-configuration
             scope: openid  
+            introspection_endpoint: http://keycloak.sandbox.fynarfin.io/auth/realms/Kong/protocol/openid-connect/token/introspect
+            redirect_after_logout_uri: http://keycloak.sandbox.fynarfin.io/auth/realms/kong-oidc/protocol/openid-connect/logout?redirect_uri=http://keycloak.sandbox.fynarfin.io
       migrations:
         preUpgrade: false
         postUpgrade: false
@@ -339,8 +341,8 @@ hello-world:
     enabled: true
     className: "kong"
     hosts:
-      - host: hello.sanbox.fynarfin.io
+      - host: hello-world.sandbox.fynarfin.io
         paths:
           - path: /
-            pathType: ImplementationSpecific
+            pathType: Prefix
     tls: []
